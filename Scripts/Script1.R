@@ -8,7 +8,7 @@ data <- fread(
   # Ubicación del archivo
   input = "data/base_indices_2005-2021.csv",
   colClasses = c("numeric","numeric")
-)
+)[`Valor de arancel`>1000,]
 
 lapply(data, class)
 
@@ -56,16 +56,16 @@ ggplot() + geom_point(aes(x = 1:20, y = wcss), color = 'blue') +
 
 
 set.seed(1234)
-kmeans <- kmeans(data, 6, iter.max = 1000, nstart = 10)
+kmeans <- kmeans(data, 4, iter.max = 1000, nstart = 10)
 
 
 #Ahora graficamos los clusters -----
 
 data$cluster <- kmeans$cluster
-ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = cluster), data = data, size = 1) +
-  scale_colour_gradientn(colours=rainbow(4)) +
-  geom_point(aes(x = kmeans$centers[, 1], y = kmeans$centers[, 2]), color = 'black', size = 3) + 
-  ggtitle('Clusters de Datos con k = 6 / K-Medios') + 
-  xlab('Puntaje de corte') + ylab('Valor de arancel')
+ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(cluster)), data = data, size = 1) +
+  geom_point(aes(x = kmeans$centers[, 1], y = kmeans$centers[, 2]), color = 'black', size = 3) +
+  labs(x='Puntaje de corte', y='Valor de arancel', col='cluster') +
+  ggtitle('Clusters de Datos con k = 6 / K-Medios') +
+  theme_classic()
 
 
