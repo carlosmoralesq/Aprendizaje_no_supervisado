@@ -67,3 +67,5 @@ ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color 
   geom_point(aes(x = kmeans$centers[, 1], y = kmeans$centers[, 2]), color = 'black', size = 3) + 
   ggtitle('Clusters de Datos con k = 6 / K-Medios') + 
   xlab('Puntaje de corte') + ylab('Valor de arancel')
+
+
