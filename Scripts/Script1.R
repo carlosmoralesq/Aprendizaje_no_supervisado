@@ -14,15 +14,6 @@ lapply(data, class)
 
 summary(data)
 
-# Transformación / Manipulación ---------------------------------------------------------------
-
-#data[j = `:=`(
-#  Puntaje_de_corte = as.numeric(`Puntaje de corte`),
-#  Valor_arancel = numeric(`Valor de arancel`)
-
-#)][]
-
-
 # Guardamos los datos procesados ------------------------------------------------
 
 saveRDS(data, file = "data/data.RDS")
@@ -32,6 +23,9 @@ saveRDS(data, file = "data/data.RDS")
 
 library(ggplot2)
 ggplot(aes(x = `Puntaje de corte`, y = `Valor de arancel`), data = data) + geom_point( alpha = 0.5) + ggtitle('Conjunto de Datos')
+
+
+# Agrupamiento K-means ----------------------------------------------------
 
 
 
@@ -65,7 +59,31 @@ data$cluster <- kmeans$cluster
 ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(cluster)), data = data, size = 1) +
   geom_point(aes(x = kmeans$centers[, 1], y = kmeans$centers[, 2]), color = 'black', size = 3) +
   labs(x='Puntaje de corte', y='Valor de arancel', col='cluster') +
-  ggtitle('Clusters de Datos con k = 6 / K-Medios') +
+  ggtitle('Clusters de Datos con k = 4 / K-Medios') +
   theme_classic()
+
+
+
+# Agrupamiento Jerárquico -------------------------------------------------
+
+#Se debe instalar y cargar la librería para graficar dendrogramas
+install.packages('ggdendro')
+library(ggdendro)
+
+#Se grafica el dendrograma
+dendrogram <- hclust(dist(data, method = 'euclidean'), method = 'ward.D')
+ggdendrogram(dendrogram, rotate = FALSE, labels = FALSE, theme_dendro = TRUE) + 
+  labs(title = "Dendrograma")
+
+#se realiza un corte del dendrograma para limitar los centroides
+agrupamientoJ <- hclust(dist(data, method = 'euclidean'), method = 'ward.D')
+clases_aj <- cutree(agrupamientoJ, k = 4)
+data$cluster <- clases_aj
+
+#Se grafica nuevamente para revisar agrupamiento
+ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = cluster), data = data, size = 1) +
+  scale_colour_gradientn(colours=rainbow(4)) +
+  ggtitle('Clusters de Datos con k = 4 / Agrupamiento Jerárquico') + 
+  xlab('X') + ylab('Y')
 
 
