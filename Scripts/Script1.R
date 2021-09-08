@@ -81,9 +81,9 @@ clases_aj <- cutree(agrupamientoJ, k = 4)
 data$cluster <- clases_aj
 
 #Se grafica nuevamente para revisar agrupamiento
-ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = cluster), data = data, size = 1) +
-  scale_colour_gradientn(colours=rainbow(4)) +
+ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(cluster)), data = data, size = 1) +
   ggtitle('Clusters de Datos con k = 4 / Agrupamiento Jerárquico') + 
-  xlab('X') + ylab('Y')
+  labs(x='Puntaje de corte', y='Valor de arancel', col='cluster') +
+  theme_classic()
 
 
