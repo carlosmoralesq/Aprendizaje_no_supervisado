@@ -29,7 +29,7 @@ ggplot(aes(x = `Puntaje de corte`, y = `Valor de arancel`), data = data) + geom_
 
 
 
-# Utilizar el método del codo para determinar la cantidad de centr --------
+# Utilizar el método del codo para determinar la cantidad de centroides
 
 set.seed(1234)
 wcss <- vector()
@@ -46,17 +46,17 @@ ggplot() + geom_point(aes(x = 1:20, y = wcss), color = 'blue') +
   ylab('WCSS')
 
 
-#Una vez seleccionada la cantidad de centroides, se aplica el algoritmo con esa cantidad----
+#Una vez seleccionada la cantidad de centroides, se aplica el algoritmo con esa cantidad
 
 
 set.seed(1234)
 kmeans <- kmeans(data, 4, iter.max = 1000, nstart = 10)
 
 
-#Ahora graficamos los clusters -----
+#Ahora graficamos los clusters
 
-data$cluster <- kmeans$cluster
-ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(cluster)), data = data, size = 1) +
+data$cluster_KM <- kmeans$cluster
+ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(cluster_KM)), data = data, size = 1) +
   geom_point(aes(x = kmeans$centers[, 1], y = kmeans$centers[, 2]), color = 'black', size = 3) +
   labs(x='Puntaje de corte', y='Valor de arancel', col='cluster') +
   ggtitle('Clusters de Datos con k = 4 / K-Medios') +
@@ -75,15 +75,19 @@ dendrogram <- hclust(dist(data, method = 'euclidean'), method = 'ward.D')
 ggdendrogram(dendrogram, rotate = FALSE, labels = FALSE, theme_dendro = TRUE) + 
   labs(title = "Dendrograma")
 
-#se realiza un corte del dendrograma para limitar los centroides
+#se realiza un corte del dendrograma para limitar los centroides utilizando método euclideano
 agrupamientoJ <- hclust(dist(data, method = 'euclidean'), method = 'ward.D')
 clases_aj <- cutree(agrupamientoJ, k = 4)
-data$cluster <- clases_aj
+data$clusterAJ <- clases_aj
 
 #Se grafica nuevamente para revisar agrupamiento
-ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(cluster)), data = data, size = 1) +
+ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color = as.factor(clusterAJ)), data = data, size = 1) +
   ggtitle('Clusters de Datos con k = 4 / Agrupamiento Jerárquico') + 
   labs(x='Puntaje de corte', y='Valor de arancel', col='cluster') +
   theme_classic()
 
+#Para visualizar la información de ambos modelos, revisan los resultados del agrupamiento para cada modelo en distintas columnas agregadas a la tabla original----
+
+
+View(data)
 
