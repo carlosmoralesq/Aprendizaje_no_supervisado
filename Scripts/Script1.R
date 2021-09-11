@@ -1,8 +1,15 @@
-# Preparamos el espacio de trabajo
+# Preparamos el espacio de trabajo----
+#install.packages(data.table)
+library(data.table)
+#install.packages("gtsummary")
+library(gtsummary)
+# install.packages("knitr")
+library(knitr)
+# install.packages("kableExtra")
+library(kableExtra)
 # Cargamos los datos --------------------------------------------------------------------------
 
-library(data.table
-)
+
 
 data <- fread(
   # Ubicación del archivo
@@ -13,6 +20,14 @@ data <- fread(
 lapply(data, class)
 
 summary(data)
+tbl_summary(
+  data,
+            # Expresando por fila, debajo de cada variable
+            type = all_continuous() ~ "continuous2",
+            # Los siguientew estadísticos
+            statistic = all_continuous() ~ c(
+              "{mean} ± {sd}", "{median} ({p25}, {p75})", "[{min}, {max}]"
+            ))
 
 # Guardamos los datos procesados ------------------------------------------------
 
@@ -62,6 +77,9 @@ ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color 
   ggtitle('Clusters de Datos con k = 4 / K-Medios') +
   theme_classic()
 
+knitr::kable(data) %>%
+  # Le asignamos un tema (propósitos estéticos)
+  kableExtra::kable_styling(bootstrap_options = "condensed")
 
 
 # Agrupamiento Jerárquico -------------------------------------------------
@@ -89,5 +107,7 @@ ggplot() + geom_point(aes(x = `Puntaje de corte`, y = `Valor de arancel`, color 
 #Para visualizar la información de ambos modelos, revisan los resultados del agrupamiento para cada modelo en distintas columnas agregadas a la tabla original----
 
 
-View(data)
+knitr::kable(data) %>%
+  # Le asignamos un tema (propósitos estéticos)
+  kableExtra::kable_styling(bootstrap_options = "condensed")
 
